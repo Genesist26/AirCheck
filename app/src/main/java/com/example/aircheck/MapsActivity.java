@@ -1,6 +1,10 @@
 package com.example.aircheck;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -40,6 +44,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         place2 = new MarkerOptions().position(new LatLng(14.0208, 100.5250)).title("Location 2");
 
         setupBotton();
+        checkPermission();
+
 
     }
 
@@ -96,6 +102,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
     }
+
+    private void checkPermission(){
+        if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            return;
+        }
+    }
+
+
 
 
 }
