@@ -1,6 +1,5 @@
 package com.example.aircheck;
 
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -26,6 +25,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MarkerOptions place1, place2;
     Polyline currentPolyline;
 
+    final static LatLng default_location  = new LatLng(13.75398, 100.50144); //Your LatLong
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,14 +46,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        CameraPosition googlePlex = CameraPosition.builder()
-                .target(new LatLng(13.75398,100.50144))
-                .zoom(5)
-                .bearing(0)
-                .tilt(0)
-                .build();
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(default_location, 5));  //move camera to location
 
-        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(googlePlex), 5000, null);
     }
 
     private void setupBotton(){
