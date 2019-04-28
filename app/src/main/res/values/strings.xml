@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Air Check</string>
     <string name="google_maps_key">AIzaSyCPBju7ajU8hwvF_IVLXJo_e4hrC_nF6rU</string>
+    <string name="title_activity_maps">Map</string>
 </resources>
