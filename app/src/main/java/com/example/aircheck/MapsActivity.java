@@ -39,6 +39,7 @@ import com.google.maps.android.ui.IconGenerator;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
@@ -87,6 +88,47 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap = googleMap;
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(default_location, 5));  //move camera to location
 
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng point) {
+
+                Double lat = point.latitude;
+                Double lon = point.longitude;
+
+                if (mMarkderDest != null) {
+                    mMarkderDest.remove();
+                }
+
+                place2 = new MarkerOptions().position(point).title("Destination");
+                mMarkderDest = mMap.addMarker(place2);
+
+                Geocoder geocoder;
+                List<Address> addresses;
+                geocoder = new Geocoder(MapsActivity.this, Locale.getDefault());
+
+                try {
+                    addresses = geocoder.getFromLocation(lat, lon, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+                    String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                    String city = addresses.get(0).getLocality();
+                    String state = addresses.get(0).getAdminArea();
+                    String country = addresses.get(0).getCountryName();
+                    String postalCode = addresses.get(0).getPostalCode();
+                    String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
+
+                    Log.i(myTAG, "address: "+address);
+                    etDest.setText(address);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.i(myTAG, "Can't get address by latlon");
+                }
+
+
+
+
+            }
+        });
+
     }
 
     private void setupBotton() {
@@ -104,8 +146,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     if (strDest.length() > 0) {
 
                         InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-
+                        if (imm.isAcceptingText()) {
+                            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                        }
 
                         addresses = geocoder.getFromLocationName(strDest, 1);
                         if (addresses.size() > 0) {
