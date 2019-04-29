@@ -71,8 +71,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        place1 = new MarkerOptions().position(new LatLng(13.75398, 100.50144)).title("Location 1");
-        place2 = new MarkerOptions().position(new LatLng(14.0208, 100.5250)).title("Location 2");
 
         setupBotton();
         checkPermission();
@@ -329,6 +327,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         place1 = new MarkerOptions().position(new LatLng(lat, lon)).title("Current");
+        place1.icon(BitmapDescriptorFactory.fromResource(R.drawable.icons8_place_marker_40));
         mMarkderOri = mMap.addMarker(place1);
 
 //        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
@@ -349,7 +348,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
 
-        for (int i = 0; i < list.size(); i++) {
+        for (int i = 1; i < (list.size()-1); i++) {
+
             LatLng mLatlng = list.get(i);
             double lat = mLatlng.latitude;
             double lng = mLatlng.longitude;
