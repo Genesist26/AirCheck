@@ -5,9 +5,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -40,6 +38,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.ui.IconGenerator;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -61,6 +60,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
     private TextView tvOri, tvDest;
     private EditText etOri, etDest;
+    private ArrayList<Marker> markerList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +95,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onMapClick(LatLng point) {
 
                 Double lat = point.latitude;
-                Double lon = point.longitude;
+                Double lng = point.longitude;
 
                 if (mMarkderDest != null) {
                     mMarkderDest.remove();
@@ -109,7 +109,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 geocoder = new Geocoder(MapsActivity.this, Locale.getDefault());
 
                 try {
-                    addresses = geocoder.getFromLocation(lat, lon, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+                    addresses = geocoder.getFromLocation(lat, lng, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
                     String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
                     String city = addresses.get(0).getLocality();
                     String state = addresses.get(0).getAdminArea();
@@ -117,15 +117,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     String postalCode = addresses.get(0).getPostalCode();
                     String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
 
-                    Log.i(myTAG, "address: "+address);
+                    Log.i(myTAG, "address: " + address);
                     etDest.setText(address);
 
                 } catch (IOException e) {
                     e.printStackTrace();
                     Log.i(myTAG, "Can't get address by latlon");
                 }
-
-
 
 
             }
@@ -147,7 +145,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     String strDest = etDest.getText().toString();
                     if (strDest.length() > 0) {
 
-                        InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                         if (imm.isAcceptingText()) {
                             imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
                         }
@@ -172,7 +170,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             mFetchURL.execute(url, "driving");
 
 
-                            Log.i(myTAG, "getUrl:\t"+ url);
+                            Log.i(myTAG, "getUrl:\t" + url);
 
                             CameraPosition googlePlex = CameraPosition.builder()
                                     .target(new LatLng(place2.getPosition().latitude, place2.getPosition().longitude))
@@ -237,6 +235,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             currentPolyline.remove();
         }
         currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
+        markPmPoint((ArrayList<LatLng>) values[1]);
     }
 
     private void checkPermission() {
@@ -334,7 +333,36 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 //        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
         Log.i(myTAG, "MapsActivity: onLocationChanged(): \t" + msg);
+    }
 
+    public void markPmPoint(ArrayList<LatLng> list) {
+        Log.i(myTAG, "markPmPoint() list size = " + list.size());
+        MarkerOptions mMarkerOption;
+
+        // icon
+        IconGenerator iconFactory = new IconGenerator(MapsActivity.this);
+//
+        if(! markerList.isEmpty()){
+            for (int i = 0; i < markerList.size(); i++) {
+                Marker mMarker = markerList.get(i);
+                mMarker.remove();
+            }
+        }
+
+        for (int i = 0; i < list.size(); i++) {
+            LatLng mLatlng = list.get(i);
+            double lat = mLatlng.latitude;
+            double lng = mLatlng.longitude;
+            Log.i(myTAG, "mLatlng[" + i + "] = (" + lat + ", " + lng + ")");
+
+            mMarkerOption = new MarkerOptions().
+                    icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("80"))).
+                    position(new LatLng(lat, lng)).
+                    anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
+
+            markerList.add(mMap.addMarker(mMarkerOption));
+
+        }
 
     }
 }
