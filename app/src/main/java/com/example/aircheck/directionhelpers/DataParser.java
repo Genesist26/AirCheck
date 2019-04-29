@@ -1,5 +1,7 @@
 package com.example.aircheck.directionhelpers;
 
+import android.util.Log;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
@@ -15,24 +17,35 @@ import java.util.List;
  */
 
 public class DataParser {
+    final static String myTAG = "myTAGDataParser";
+
     public List<List<HashMap<String, String>>> parse(JSONObject jObject) {
 
         List<List<HashMap<String, String>>> routes = new ArrayList<>();
         JSONArray jRoutes;
         JSONArray jLegs;
         JSONArray jSteps;
+        JSONArray jManeuver;
+
+        int x = 0;
+
         try {
             jRoutes = jObject.getJSONArray("routes");
             /** Traversing all routes */
             for (int i = 0; i < jRoutes.length(); i++) {
+
                 jLegs = ((JSONObject) jRoutes.get(i)).getJSONArray("legs");
                 List path = new ArrayList<>();
                 /** Traversing all legs */
                 for (int j = 0; j < jLegs.length(); j++) {
                     jSteps = ((JSONObject) jLegs.get(j)).getJSONArray("steps");
+//                    Log.i(myTAG, jSteps.toString());
 
                     /** Traversing all steps */
                     for (int k = 0; k < jSteps.length(); k++) {
+//                        jManeuver = ((JSONObject) jLegs.get(j)).getJSONArray("maneuver");
+//                        Log.i(myTAG, jManeuver.toString());
+
                         String polyline = "";
                         polyline = (String) ((JSONObject) ((JSONObject) jSteps.get(k)).get("polyline")).get("points");
                         List<LatLng> list = decodePoly(polyline);
@@ -46,6 +59,7 @@ public class DataParser {
                         }
                     }
                     routes.add(path);
+
                 }
             }
 

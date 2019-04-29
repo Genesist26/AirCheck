@@ -12,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -94,25 +95,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         btnGetDirection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                String url = getUrl(place1.getPosition(), place2.getPosition(), "driving");
-//                new FetchURL(MapsActivity.this).execute(url, "driving");
-//                mMap.addMarker(place1);
-//                mMap.addMarker(place2);
-//
-//                CameraPosition googlePlex = CameraPosition.builder()
-//                        .target(new LatLng(place2.getPosition().latitude, place2.getPosition().longitude))
-//                        .zoom(10)
-//                        .bearing(0)
-//                        .tilt(45)
-//                        .build();
-//
-//                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(googlePlex), 5000, null);
-
                 Geocoder geocoder = new Geocoder(MapsActivity.this);
                 List<Address> addresses;
                 try {
                     String strDest = etDest.getText().toString();
                     if (strDest.length() > 0) {
+
+                        InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+
+
                         addresses = geocoder.getFromLocationName(strDest, 1);
                         if (addresses.size() > 0) {
                             double latitude = addresses.get(0).getLatitude();
@@ -130,6 +122,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                             String url = getUrl(place1.getPosition(), place2.getPosition(), "driving");
                             new FetchURL(MapsActivity.this).execute(url, "driving");
+
+                            Log.i(myTAG, "getUrl:\t"+ url);
 
                             CameraPosition googlePlex = CameraPosition.builder()
                                     .target(new LatLng(place2.getPosition().latitude, place2.getPosition().longitude))
