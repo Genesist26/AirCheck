@@ -16,7 +16,6 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
     private GoogleMap mMap;
     final static LatLng default_location = new LatLng(13.75398, 100.50144); //Your LatLong
 
-    int x = 9;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
