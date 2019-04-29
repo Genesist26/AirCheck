@@ -70,10 +70,15 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
         // Traversing through all the routes
         for (int i = 0; i < result.size(); i++) {
 
+
             points = new ArrayList<>();
             lineOptions = new PolylineOptions();
             // Fetching i-th route
             List<HashMap<String, String>> path = result.get(i);
+
+            int maxPmPoint = 10;
+            int reachPmPoint = path.size()/ maxPmPoint;
+
             // Fetching all the points in i-th route
             for (int j = 0; j < path.size(); j++) {
                 HashMap<String, String> point = path.get(j);
@@ -83,14 +88,13 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
                 points.add(position);
 
                 resultPointCounter++;
-                if(resultPointCounter == 100){
+                if(resultPointCounter == reachPmPoint){
                     resultPointCounter = 0;
                     pmPoint.add(position);
 //                    Log.i(myTAG, "j="+j+"("+lat+", "+lng+")");
                 }
 
             }
-
 
             Log.i(myTAG, "pmPoint size = " + pmPoint.size());
             // Adding all the points in the route to LineOptions
@@ -110,7 +114,7 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
         // Drawing polyline in the Google Map for the i-th route
         if (lineOptions != null) {
             //mMap.addPolyline(lineOptions);
-            taskCallback.onTaskDone(lineOptions);
+            taskCallback.onTaskDone(lineOptions, pmPoint);
 
         } else {
             Log.d("mylog", "without Polylines drawn");
