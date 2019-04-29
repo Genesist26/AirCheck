@@ -21,11 +21,14 @@ import java.util.List;
 public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
     TaskLoadedCallback taskCallback;
     String directionMode = "driving";
+
     final static String myTAG = "myTAGPointParser";
+    ArrayList<LatLng> pmPoint;
 
     public PointsParser(Context mContext, String directionMode) {
         this.taskCallback = (TaskLoadedCallback) mContext;
         this.directionMode = directionMode;
+        this.pmPoint = new ArrayList<>();
     }
 
     // Parsing the data in non-ui thread
@@ -67,8 +70,6 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
         // Traversing through all the routes
         for (int i = 0; i < result.size(); i++) {
 
-
-
             points = new ArrayList<>();
             lineOptions = new PolylineOptions();
             // Fetching i-th route
@@ -84,11 +85,14 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
                 resultPointCounter++;
                 if(resultPointCounter == 100){
                     resultPointCounter = 0;
-                    Log.i(myTAG, "j="+j+"("+lat+", "+lng+")");
+                    pmPoint.add(position);
+//                    Log.i(myTAG, "j="+j+"("+lat+", "+lng+")");
                 }
 
             }
 
+
+            Log.i(myTAG, "pmPoint size = " + pmPoint.size());
             // Adding all the points in the route to LineOptions
             lineOptions.addAll(points);
 
@@ -100,6 +104,7 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
                 lineOptions.color(Color.BLUE);
             }
             Log.d("mylog", "onPostExecute lineoptions decoded");
+
         }
 
         // Drawing polyline in the Google Map for the i-th route
@@ -111,4 +116,10 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
             Log.d("mylog", "without Polylines drawn");
         }
     }
+
+    public ArrayList<LatLng> getPmPoint(){
+        return pmPoint;
+    }
+
+
 }

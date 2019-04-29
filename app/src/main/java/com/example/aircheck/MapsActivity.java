@@ -5,7 +5,9 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -166,7 +168,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             mMarkderDest = mMap.addMarker(place2);
 
                             String url = getUrl(place1.getPosition(), place2.getPosition(), "driving");
-                            new FetchURL(MapsActivity.this).execute(url, "driving");
+                            FetchURL mFetchURL = new FetchURL(MapsActivity.this);
+                            mFetchURL.execute(url, "driving");
+
 
                             Log.i(myTAG, "getUrl:\t"+ url);
 
@@ -179,6 +183,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(googlePlex), 5000, null);
 
+
+//                            try {
+//                                Object x = mFetchURL.getPmPoint();
+//                                Log.i(myTAG, "success mFetchURL.getPmPoint()");
+//
+//                            }catch (Exception e){
+//                                Log.i(myTAG, "Exceiton mFetchURL.getPmPoint(): "+e.toString());
+//
+//                            }
 
                             // icon
 //                            IconGenerator iconFactory = new IconGenerator(MapsActivity.this);

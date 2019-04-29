@@ -4,12 +4,15 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 /**
  * Created by Vishal on 10/20/2018.
@@ -19,6 +22,7 @@ public class FetchURL extends AsyncTask<String, Void, String> {
     Context mContext;
     String directionMode = "driving";
     final static String myTAG = "myTAGFetchURL";
+    public PointsParser parserTask;
 
     public FetchURL(Context mContext) {
         this.mContext = mContext;
@@ -42,9 +46,19 @@ public class FetchURL extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        PointsParser parserTask = new PointsParser(mContext, directionMode);
+        parserTask = new PointsParser(mContext, directionMode);
         // Invokes the thread for parsing the JSON data
+
         parserTask.execute(s);
+        Log.i(myTAG, "parserTask status: "+parserTask.getStatus());
+
+
+
+    }
+
+    public ArrayList<LatLng> getPmPoint(){
+        Log.i(myTAG, "FetchURL getPmPoint()");
+        return parserTask.getPmPoint();
     }
 
     private String downloadUrl(String strUrl) throws IOException {
