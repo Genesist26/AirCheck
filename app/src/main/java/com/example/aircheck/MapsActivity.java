@@ -340,7 +340,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // icon
         IconGenerator iconFactory = new IconGenerator(MapsActivity.this);
-//
         if(! markerList.isEmpty()){
             for (int i = 0; i < markerList.size(); i++) {
                 Marker mMarker = markerList.get(i);
