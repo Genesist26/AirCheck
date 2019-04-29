@@ -25,7 +25,6 @@ public class DataParser {
         JSONArray jRoutes;
         JSONArray jLegs;
         JSONArray jSteps;
-        JSONArray jManeuver;
 
         int x = 0;
 

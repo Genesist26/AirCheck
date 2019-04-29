@@ -66,7 +66,7 @@ public class FetchURL extends AsyncTask<String, Void, String> {
                 sb.append(line);
             }
             data = sb.toString();
-            Log.d(myTAG, "Downloaded URL: " + data.toString());
+//            Log.d(myTAG, "Downloaded URL: " + data.toString());
             br.close();
         } catch (Exception e) {
             Log.d(myTAG, "Exception downloading URL: " + e.toString());

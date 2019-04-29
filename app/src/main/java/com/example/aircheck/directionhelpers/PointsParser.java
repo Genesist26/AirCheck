@@ -21,6 +21,7 @@ import java.util.List;
 public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
     TaskLoadedCallback taskCallback;
     String directionMode = "driving";
+    final static String myTAG = "myTAGPointParser";
 
     public PointsParser(Context mContext, String directionMode) {
         this.taskCallback = (TaskLoadedCallback) mContext;
@@ -45,6 +46,9 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
             Log.d("mylog", "Executing routes");
             Log.d("mylog", routes.toString());
 
+
+
+
         } catch (Exception e) {
             Log.d("mylog", e.toString());
             e.printStackTrace();
@@ -57,8 +61,14 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
     protected void onPostExecute(List<List<HashMap<String, String>>> result) {
         ArrayList<LatLng> points;
         PolylineOptions lineOptions = null;
+
+        int resultPointCounter = 0;
+
         // Traversing through all the routes
         for (int i = 0; i < result.size(); i++) {
+
+
+
             points = new ArrayList<>();
             lineOptions = new PolylineOptions();
             // Fetching i-th route
@@ -70,9 +80,18 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
                 double lng = Double.parseDouble(point.get("lng"));
                 LatLng position = new LatLng(lat, lng);
                 points.add(position);
+
+                resultPointCounter++;
+                if(resultPointCounter == 100){
+                    resultPointCounter = 0;
+                    Log.i(myTAG, "j="+j+"("+lat+", "+lng+")");
+                }
+
             }
+
             // Adding all the points in the route to LineOptions
             lineOptions.addAll(points);
+
             if (directionMode.equalsIgnoreCase("walking")) {
                 lineOptions.width(10);
                 lineOptions.color(Color.MAGENTA);
