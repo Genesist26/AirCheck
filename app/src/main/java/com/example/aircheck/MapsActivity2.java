@@ -223,14 +223,16 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
 
     public void loadData(){
         for(int i=0; i< 76; i++) {
+
+            IconGenerator iconFactory = new IconGenerator(MapsActivity2.this);
+            MarkerOptions mMarker;
+
             String province = province_list.get(i);
             String pmValue = pm_list.get(i);
             String lat1 = latitude_list.get(i);
             String lng1 = longitude_list.get(i);
             double lat = Double.parseDouble(lat1);
             double lng = Double.parseDouble(lng1);
-            IconGenerator iconFactory = new IconGenerator(MapsActivity2.this);
-            MarkerOptions mMarker;
 
             mMarker = new MarkerOptions().
                     icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(pmValue))).
