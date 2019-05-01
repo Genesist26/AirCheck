@@ -1,10 +1,14 @@
 package com.example.aircheck;
 
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
+import com.example.aircheck.Interface.IFirebaseLoadDone;
+import com.example.aircheck.pm25.Item;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -12,18 +16,33 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.ui.IconGenerator;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.example.aircheck.MapsActivity.myTAG;
 
-public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallback {
+public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallback, IFirebaseLoadDone {
 
     private GoogleMap mMap;
     final static LatLng default_location = new LatLng(13.75398, 100.50144); //Your LatLong
-    ArrayList<LatLng> provinceLocation;
+
+    DatabaseReference itemRef;
+    IFirebaseLoadDone iFirebaseLoadDone;
+
+    List<String> province_list;
+    List<String> pm_list;
+    List<String> latitude_list;
+    List<String> longitude_list;
+
+    List<Item> items;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +53,25 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        itemRef = FirebaseDatabase.getInstance().getReference("Data");
+
+        iFirebaseLoadDone = this;
+
+        itemRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<Item> items = new ArrayList<>();
+                for(DataSnapshot itemSnapShot:dataSnapshot.getChildren()) {
+                    items.add(itemSnapShot.getValue(Item.class));
+                }
+                iFirebaseLoadDone.onFirebaseLoadSuccess(items);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                iFirebaseLoadDone.onFirebaseLoadFailed(databaseError.getMessage());
+            }
+        });
 
     }
 
@@ -42,7 +80,7 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
         mMap = googleMap;
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(default_location, 5));  //move camera to location
         markAllProvince();
-        makeFakeData();
+        //loadData();
     }
 
     public void markAllProvince(){
@@ -50,7 +88,7 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
     }
 
 
-    public void makeFakeData(){
+    /*public void makeFakeData(){
         provinceLocation = new ArrayList<>();
         String data = "Amnat Charoen,15.823,104.562,186\n" +
                 "Ang Thong,14.588,100.459,378\n" +
@@ -142,15 +180,70 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
             String pmValue = str[3];
 
             mMarker = new MarkerOptions().
-                    icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(pmValue))).
-                    position(new LatLng(lat, lng)).
-                    anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV()).title(province);
+                    icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(pm_list))).
+                    position(new LatLng(latitude_list,longitude_list)).
+                    anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV()).title(province_list);
 
             mMap.addMarker(mMarker);
 
 
         }
 //        Log.i(myTAG, "sData size = "+sData.length);
+
+    }*/
+
+    @Override
+    public void onFirebaseLoadSuccess(List<Item> itemList) {
+        items = itemList;
+
+        province_list = new ArrayList<>();
+        for (Item item : itemList)
+            province_list.add(item.getProvince());
+                //String province = province_list.get(i);
+
+        pm_list = new ArrayList<>();
+        for (Item item : itemList)
+            pm_list.add(item.getPm());
+                //String pmValue = pm_list.get(i);
+
+        latitude_list = new ArrayList<>();
+        for (Item item : itemList)
+            latitude_list.add(item.getLatitude());
+                //double lat = latitude_list.get(i);
+
+        longitude_list = new ArrayList<>();
+        for (Item item : itemList)
+            longitude_list.add(item.getLongitude());
+                //double lng = longitude_list.get(i);
+
+
+        loadData();
+
+    }
+
+    public void loadData(){
+        for(int i=0; i< 76; i++) {
+            String province = province_list.get(i);
+            String pmValue = pm_list.get(i);
+            String lat1 = latitude_list.get(i);
+            String lng1 = longitude_list.get(i);
+            double lat = Double.parseDouble(lat1);
+            double lng = Double.parseDouble(lng1);
+            IconGenerator iconFactory = new IconGenerator(MapsActivity2.this);
+            MarkerOptions mMarker;
+
+            mMarker = new MarkerOptions().
+                    icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(pmValue))).
+                    position(new LatLng(lat, lng)).
+                    anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV()).title(province);
+
+            mMap.addMarker(mMarker);
+        }
+
+    }
+
+    @Override
+    public void onFirebaseLoadFailed(String message) {
 
     }
 }
