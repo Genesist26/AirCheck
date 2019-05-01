@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import com.example.aircheck.Interface.IFirebaseLoadDone;
 import com.example.aircheck.pm25.Item;
@@ -73,21 +74,42 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
             }
         });
 
+
+        Toast.makeText(this, "Loading data", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(default_location, 5));  //move camera to location
-        markAllProvince();
-        //loadData();
     }
 
-    public void markAllProvince(){
+    public void markPmPoint(List<Item> itemList){
 
+        IconGenerator iconFactory = new IconGenerator(MapsActivity2.this);
+        MarkerOptions mMarker;
+
+
+        // skip header
+        for(int i=1; i<itemList.size(); i++){
+            String aRecord = itemList.get(i).getRecord();
+            Log.i(myTAG, "["+i+"]:\t" + aRecord);
+            String[] record_datas = itemList.get(i).getRecord().split(",");
+
+            String province = record_datas[0];
+            double lat = Double.parseDouble(record_datas[1]);
+            double lng = Double.parseDouble(record_datas[2]);
+            String pmValue = record_datas[3];
+
+            mMarker = new MarkerOptions().
+                    icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(pmValue))).
+                    position(new LatLng(lat,lng)).
+                    anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV()).title(province);
+
+            mMap.addMarker(mMarker);
+        }
     }
-
-
     /*public void makeFakeData(){
         provinceLocation = new ArrayList<>();
         String data = "Amnat Charoen,15.823,104.562,186\n" +
@@ -195,52 +217,58 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
     @Override
     public void onFirebaseLoadSuccess(List<Item> itemList) {
         items = itemList;
-
-        province_list = new ArrayList<>();
-        for (Item item : itemList)
-            province_list.add(item.getProvince());
-                //String province = province_list.get(i);
-
-        pm_list = new ArrayList<>();
-        for (Item item : itemList)
-            pm_list.add(item.getPm());
-                //String pmValue = pm_list.get(i);
-
-        latitude_list = new ArrayList<>();
-        for (Item item : itemList)
-            latitude_list.add(item.getLatitude());
-                //double lat = latitude_list.get(i);
-
-        longitude_list = new ArrayList<>();
-        for (Item item : itemList)
-            longitude_list.add(item.getLongitude());
-                //double lng = longitude_list.get(i);
+        markPmPoint(itemList);
 
 
-        loadData();
+
+//        Log.i(myTAG, items.toString());
+
+//        province_list = new ArrayList<>();
+//        for (Item item : itemList)
+//            province_list.add(item.getProvince());
+//                //String province = province_list.get(i);
+//
+//        pm_list = new ArrayList<>();
+//        for (Item item : itemList)
+//            pm_list.add(item.getPm());
+//                //String pmValue = pm_list.get(i);
+//
+//        latitude_list = new ArrayList<>();
+//        for (Item item : itemList)
+//            latitude_list.add(item.getLatitude());
+//                //double lat = latitude_list.get(i);
+//
+//        longitude_list = new ArrayList<>();
+//        for (Item item : itemList)
+//            longitude_list.add(item.getLongitude());
+//                //double lng = longitude_list.get(i);
+//
+//
+//        loadData();
 
     }
 
     public void loadData(){
-        for(int i=0; i< 76; i++) {
 
-            IconGenerator iconFactory = new IconGenerator(MapsActivity2.this);
-            MarkerOptions mMarker;
-
-            String province = province_list.get(i);
-            String pmValue = pm_list.get(i);
-            String lat1 = latitude_list.get(i);
-            String lng1 = longitude_list.get(i);
-            double lat = Double.parseDouble(lat1);
-            double lng = Double.parseDouble(lng1);
-
-            mMarker = new MarkerOptions().
-                    icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(pmValue))).
-                    position(new LatLng(lat, lng)).
-                    anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV()).title(province);
-
-            mMap.addMarker(mMarker);
-        }
+//        for(int i=0; i< 76; i++) {
+//
+//            IconGenerator iconFactory = new IconGenerator(MapsActivity2.this);
+//            MarkerOptions mMarker;
+//
+//            String province = province_list.get(i);
+//            String pmValue = pm_list.get(i);
+//            String lat1 = latitude_list.get(i);
+//            String lng1 = longitude_list.get(i);
+//            double lat = Double.parseDouble(lat1);
+//            double lng = Double.parseDouble(lng1);
+//
+//            mMarker = new MarkerOptions().
+//                    icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(pmValue))).
+//                    position(new LatLng(lat, lng)).
+//                    anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV()).title(province);
+//
+//            mMap.addMarker(mMarker);
+//        }
 
     }
 

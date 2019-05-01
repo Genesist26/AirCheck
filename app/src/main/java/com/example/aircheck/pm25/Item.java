@@ -46,6 +46,10 @@ public class Item {
             return province;
         }
 
+        public String getRecord(){
+            return province+","+latitude+","+longitude+","+pm;
+        }
+
         public void setProvince(String province) {
             this.province = province;
         }
