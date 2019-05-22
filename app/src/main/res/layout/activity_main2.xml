@@ -61,8 +61,8 @@
 
         <Button
             android:id="@+id/pm"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
             android:background="@drawable/btn_background"
             android:textSize="100sp"
             android:textStyle="normal|bold" />

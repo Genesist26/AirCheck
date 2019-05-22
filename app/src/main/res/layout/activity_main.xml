@@ -9,7 +9,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/darker_gray"
         android:orientation="vertical">
 
         <TextView
@@ -17,26 +16,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="40dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="40dp"
             android:text="Air Check"
+            android:textColor="@android:color/black"
             android:textSize="32dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/bt_pm"
-            android:layout_width="250dp"
-            android:layout_height="150dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="40dp"
-            android:text="PM"
-            android:textSize="28dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_app_name" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -47,16 +34,40 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="right|top"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/bt_pm"
+                    android:layout_width="100dp"
+                    android:layout_height="75dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="5dp"
+                    android:background="@color/common_google_signin_btn_text_dark_disabled"
+                    android:text="PM"
+                    android:textColor="@android:color/white"
+                    android:textSize="28dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_app_name" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
                 android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/bt_nav"
-                    android:layout_width="120dp"
+                    android:layout_width="100dp"
                     android:layout_height="75dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="5dp"
+                    android:background="@color/common_google_signin_btn_text_dark_disabled"
+                    android:gravity="center"
                     android:text="NAV"
+                    android:textColor="@android:color/white"
+                    android:textSize="28sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/bt_pm" />
             </LinearLayout>
@@ -65,16 +76,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="top|left"
+                android:gravity="center"
                 android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/bt_map"
-                    android:layout_width="120dp"
+                    android:layout_width="100dp"
                     android:layout_height="75dp"
                     android:layout_marginLeft="5dp"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@color/common_google_signin_btn_text_dark_disabled"
                     android:text="MAP"
+                    android:textColor="@android:color/white"
+                    android:textSize="28sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/bt_pm" />
             </LinearLayout>
@@ -83,7 +97,10 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="20dp"
             android:background="@android:color/white"
             android:orientation="vertical">
 
